@@ -20,6 +20,7 @@ class Enterprise:
     starting_Capital = 100
     operating_Profit = []
     operating_Expenses = 15
+    bankrupt = False
 
 def main():
     enterpriseA = Enterprise()
@@ -36,11 +37,16 @@ def main():
 
     while current_Round <= rounds:
         #Check if either firm has enough capital to continue
-        if enterpriseA.starting_Capital < 0:
+        if enterpriseA.starting_Capital <= 0:
+            enterpriseA.bankrupt = True
             print("Firm A has gone bankrupt")
 
-        if enterpriseB.starting_Capital < 0:
+        if enterpriseB.starting_Capital <= 0:
+            enterpriseB.bankrupt = True
             print("Firm B has gone bankrupt")
+
+        if enterpriseB.bankrupt == True and enterpriseB.bankrupt == True:
+            print("Both firms have defected")
             break
 
         #Objective of the game is for each firm to maximize payoff
@@ -87,8 +93,8 @@ def main():
             enterpriseA.starting_Capital += enterpriseBLowPrice[0]
             enterpriseB.starting_Capital += enterpriseBLowPrice[1]
         if choiceA == "highPrice" and choiceB == "highPrice":
-            enterpriseA.starting_Capital += bothHighPrice[0]
-            enterpriseB.starting_Capital += bothHighPrice[1]
+            enterpriseA.starting_Capital += bothHighPrices[0]
+            enterpriseB.starting_Capital += bothHighPrices[1]
             
         print("Firm A now has " + str(enterpriseA.starting_Capital) + " in capital")
         print("Firm B now has " + str(enterpriseB.starting_Capital) + " in capital")
