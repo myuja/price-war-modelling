@@ -1,4 +1,4 @@
-################################################
+######################################################
 #
 #   name: Michael Yuja & Marios Lykiardopoulos
 #   
@@ -8,9 +8,10 @@
 #
 #   email: m.j.yuja.matute@student.rug.nl
 #          m.p.lykiardopoulos@student.rug.nl
-################################################
+######################################################
 
 import time
+import matplotlib.pyplot as plt
 
 #Initiliatize the variables
 
@@ -18,37 +19,52 @@ import time
 
 class Enterprise:
     starting_Capital = 100
+    market_Share = 0.5
     operating_Profit = []
-    operating_Expenses = 15
+    operating_Expenses = 10
     bankrupt = False
 
 def main():
+    #Initialize enterprises with desired parameters
     enterpriseA = Enterprise()
     enterpriseB = Enterprise()
-
+    enterpriseB.operating_Expenses = 20
     rounds = 12
 
+    #Initialize the payoff matrix
     bothHighPrices = [10, 10]
     enterpriseALowPrice = [20,0]
     enterpriseBLowPrice = [0,20]
     bothLowPrice = [5,5]
-    payoff_Matrix = [bothHighPrices,enterpriseALowPrice,enterpriseBLowPrice,bothLowPrice]
-    current_Round = 1
 
-    while current_Round <= rounds:
+    #Initialize variables for looping and storing data
+    current_Round = 0
+    enterpriseACap = []
+    enterpriseBCap = []
+
+    #Begin the game
+    while current_Round < rounds:
         #Check if either firm has enough capital to continue
-        if enterpriseA.starting_Capital <= 0:
+        if enterpriseA.starting_Capital<= 0 and enterpriseA.bankrupt == False:
             enterpriseA.bankrupt = True
-            print("Firm A has gone bankrupt")
-
-        if enterpriseB.starting_Capital <= 0:
-            enterpriseB.bankrupt = True
-            print("Firm B has gone bankrupt")
-
-        if enterpriseB.bankrupt == True and enterpriseB.bankrupt == True:
-            print("Both firms have defected")
+            rounds = current_Round
+            print("Firm A has gone bankrupt. Firm B wins.\n")
             break
 
+        if enterpriseB.starting_Capital <= 0 and enterpriseB.bankrupt == False:
+            enterpriseB.bankrupt = True
+            rounds = current_Round
+            print("Firm B has gone bankrupt. Firm A wins.\n")
+            break
+
+        if enterpriseA.bankrupt == True and enterpriseB.bankrupt == True:
+            rounds = current_Round
+            print("Both firms are bankrupt. The game has ended.")
+            break
+
+        enterpriseACap += [enterpriseA.starting_Capital]
+        enterpriseBCap += [enterpriseB.starting_Capital]
+        
         #Objective of the game is for each firm to maximize payoff
         lowPricePayOffA = enterpriseALowPrice[0] + bothLowPrice[0]
         lowPricePayOffB = enterpriseBLowPrice[1] + bothLowPrice[1]
@@ -71,19 +87,16 @@ def main():
 
         #Sutract the firm's operating expenses from the starting capital
         enterpriseA.starting_Capital -= enterpriseA.operating_Expenses
-        enterpriseB.starting_Capital -= enterpriseA.operating_Expenses
+        enterpriseB.starting_Capital -= enterpriseB.operating_Expenses
         print("Firm A spends " + str(enterpriseA.operating_Expenses) + ' in operating expenses.')
         print("Firm B spends " + str(enterpriseB.operating_Expenses) + ' in operating expenses.')
 
-        
         print("Firm A chose to set a " + choiceA)
         print("Firm B chose to set a " + choiceB)
 
 
         #Evaluate all the cases based on firm choices
         if choiceA == "lowPrice" and choiceB == "lowPrice":
-            enterpriseA.operating_Profit += [bothLowPrice[0]]
-            enterpriseB.operating_Profit += [bothLowPrice[1]]
             enterpriseA.starting_Capital += bothLowPrice[0]
             enterpriseB.starting_Capital += bothLowPrice[1]
         if choiceA == "lowPrice" and choiceB == "highPrice":
@@ -99,10 +112,11 @@ def main():
         print("Firm A now has " + str(enterpriseA.starting_Capital) + " in capital")
         print("Firm B now has " + str(enterpriseB.starting_Capital) + " in capital")
 
-
         print("-------------------------\n")
         
         current_Round += 1
+    
+    plot(rounds, enterpriseACap, enterpriseBCap)
 
 """
 def getTimeFormatted(seconds):
@@ -110,6 +124,37 @@ def getTimeFormatted(seconds):
 	return "%02d:%02d" % (m, s)
 
     """
+    
+def plot(rounds, enterpriseACap, enterpriseBCap):
+    # x axis values 
+    x = [x for x in range(1, rounds + 1)]
+    # corresponding y axis values 
+    y1 = enterpriseACap
+    y2 = enterpriseBCap
+
+    # plotting the points  
+    plt.plot(x, y1, label = "Enterprise A")
+    
+    # plotting the points  
+    plt.plot(x, y2, label = "Enterprise B")  
+    
+    # naming the x axis 
+    plt.xlabel('Round') 
+    # naming the y axis 
+    plt.ylabel('Capital') 
+    
+    # giving a title to my graph 
+    plt.title('Capital of two firms in a price war') 
+    
+    # show a legend on the plot 
+    plt.legend() 
+
+    # function to show the plot 
+    plt.show() 
+    
+  
+
+
 if __name__ == '__main__':
     main()
 
