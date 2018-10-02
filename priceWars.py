@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 
 class Enterprise:
     starting_Capital = 100
-    market_Share = 0.5
+    market_Share = 50
     operating_Profit = []
     operating_Expenses = 10
     bankrupt = False
@@ -28,14 +28,9 @@ def main():
     #Initialize enterprises with desired parameters
     enterpriseA = Enterprise()
     enterpriseB = Enterprise()
-    enterpriseB.operating_Expenses = 20
+    
+    #enterpriseB.operating_Expenses = 20
     rounds = 12
-
-    #Initialize the payoff matrix
-    bothHighPrices = [10, 10]
-    enterpriseALowPrice = [20,0]
-    enterpriseBLowPrice = [0,20]
-    bothLowPrice = [5,5]
 
     #Initialize variables for looping and storing data
     current_Round = 0
@@ -44,17 +39,24 @@ def main():
 
     #Begin the game
     while current_Round < rounds:
+
+        #Initialize the payoff matrix
+        bothHighPrices = [10 * enterpriseA.market_Share/100, 10 * enterpriseB.market_Share/100]
+        enterpriseALowPrice = [20 * enterpriseA.market_Share/100, 0 * enterpriseB.market_Share/100]
+        enterpriseBLowPrice = [0 * enterpriseA.market_Share/100, 20 * enterpriseB.market_Share/100]
+        bothLowPrice = [5 * enterpriseA.market_Share/100, 5 * enterpriseB.market_Share/100]
+
         #Check if either firm has enough capital to continue
-        if enterpriseA.starting_Capital<= 0 and enterpriseA.bankrupt == False:
+        if enterpriseA.starting_Capital<= enterpriseA.operating_Expenses and enterpriseA.bankrupt == False:
             enterpriseA.bankrupt = True
             rounds = current_Round
-            print("Firm A has gone bankrupt. Firm B wins.\n")
+            print("Firm A can't cover its operating expenses for the next round. Firm B wins.\n")
             break
 
-        if enterpriseB.starting_Capital <= 0 and enterpriseB.bankrupt == False:
+        if enterpriseB.starting_Capital <= enterpriseA.operating_Expenses and enterpriseB.bankrupt == False:
             enterpriseB.bankrupt = True
             rounds = current_Round
-            print("Firm B has gone bankrupt. Firm A wins.\n")
+            print("Firm B can't cover its operating expenses for the next round. Firm A wins.\n")
             break
 
         if enterpriseA.bankrupt == True and enterpriseB.bankrupt == True:
@@ -112,8 +114,16 @@ def main():
         print("Firm A now has " + str(enterpriseA.starting_Capital) + " in capital")
         print("Firm B now has " + str(enterpriseB.starting_Capital) + " in capital")
 
+        market_share = 100
+        if current_Round < 4:
+            enterpriseA.market_Share += 10
+            enterpriseB.market_Share = market_share - enterpriseA.market_Share
+
+        print("Firm A now has " + str(enterpriseA.market_Share) + "% in market share")
+        print("Firm B now has " + str(enterpriseB.market_Share) + "% in market share")
         print("-------------------------\n")
-        
+
+
         current_Round += 1
     
     plot(rounds, enterpriseACap, enterpriseBCap)
