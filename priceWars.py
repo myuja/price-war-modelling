@@ -12,6 +12,8 @@
 
 import time
 import matplotlib.pyplot as plt
+from random import seed
+from random import random
 
 #Initiliatize the variables
 
@@ -28,8 +30,7 @@ def main():
     #Initialize enterprises with desired parameters
     enterpriseA = Enterprise()
     enterpriseB = Enterprise()
-    
-    #enterpriseB.operating_Expenses = 20
+
     rounds = 12
 
     #Initialize variables for looping and storing data
@@ -41,6 +42,7 @@ def main():
     while current_Round < rounds:
 
         #Initialize the payoff matrix
+        #The values are multiplied by the market share 
         bothHighPrices = [10 * enterpriseA.market_Share/100, 10 * enterpriseB.market_Share/100]
         enterpriseALowPrice = [20 * enterpriseA.market_Share/100, 0 * enterpriseB.market_Share/100]
         enterpriseBLowPrice = [0 * enterpriseA.market_Share/100, 20 * enterpriseB.market_Share/100]
@@ -64,6 +66,7 @@ def main():
             print("Both firms are bankrupt. The game has ended.")
             break
 
+        #These lists keep track of all the starting capitals for plotting
         enterpriseACap += [enterpriseA.starting_Capital]
         enterpriseBCap += [enterpriseB.starting_Capital]
         
@@ -83,6 +86,14 @@ def main():
         else:
             choiceB = "highPrice"
 
+        #For the starting round, we assume that neither company knows the true market price
+        #They are given equal probabilities to choose a low price or a high price
+        if current_Round == 0:
+            seed(10)
+            rand = [random(), random()]
+            choiceA = "lowPrice" if rand[0] < 0.50 else "highPrice"
+            choiceB = "lowPrice" if rand[1] < 0.50 else "highPrice"
+
         print("Round: " + str(current_Round))
         print("Firm A starts with " + str(enterpriseA.starting_Capital) + ' in capital')
         print("Firm B starts with " + str(enterpriseB.starting_Capital) + ' in capital')
@@ -98,26 +109,38 @@ def main():
 
 
         #Evaluate all the cases based on firm choices
+        #Reward or punish the choice in market share if opposite choices are made
         if choiceA == "lowPrice" and choiceB == "lowPrice":
             enterpriseA.starting_Capital += bothLowPrice[0]
             enterpriseB.starting_Capital += bothLowPrice[1]
         if choiceA == "lowPrice" and choiceB == "highPrice":
             enterpriseA.starting_Capital += enterpriseALowPrice[0]
             enterpriseB.starting_Capital += enterpriseALowPrice[1]
+
+            #Reward Firm A
+            enterpriseA.market_Share += 10
+
+            #Punish Firm B
+            enterpriseB.market_Share -= 10
         if choiceA == "highPrice" and choiceB == "lowPrice":
             enterpriseA.starting_Capital += enterpriseBLowPrice[0]
             enterpriseB.starting_Capital += enterpriseBLowPrice[1]
+
+            #Punish Firm A
+            enterpriseA.market_Share -= 10
+            
+            #Reward Firm B
+            enterpriseB.market_Share += 10
+
         if choiceA == "highPrice" and choiceB == "highPrice":
             enterpriseA.starting_Capital += bothHighPrices[0]
             enterpriseB.starting_Capital += bothHighPrices[1]
             
+
         print("Firm A now has " + str(enterpriseA.starting_Capital) + " in capital")
         print("Firm B now has " + str(enterpriseB.starting_Capital) + " in capital")
 
-        market_share = 100
-        if current_Round < 4:
-            enterpriseA.market_Share += 10
-            enterpriseB.market_Share = market_share - enterpriseA.market_Share
+        
 
         print("Firm A now has " + str(enterpriseA.market_Share) + "% in market share")
         print("Firm B now has " + str(enterpriseB.market_Share) + "% in market share")
@@ -128,12 +151,9 @@ def main():
     
     plot(rounds, enterpriseACap, enterpriseBCap)
 
-"""
-def getTimeFormatted(seconds):
-	m, s = divmod(seconds, 60)
-	return "%02d:%02d" % (m, s)
 
-    """
+def choose_Strategy():
+    
     
 def plot(rounds, enterpriseACap, enterpriseBCap):
     # x axis values 
@@ -154,7 +174,7 @@ def plot(rounds, enterpriseACap, enterpriseBCap):
     plt.ylabel('Capital') 
     
     # giving a title to my graph 
-    plt.title('Capital of two firms in a price war') 
+    plt.title('Capital of Two Firms in a Price War') 
     
     # show a legend on the plot 
     plt.legend() 
@@ -163,8 +183,6 @@ def plot(rounds, enterpriseACap, enterpriseBCap):
     plt.show() 
     
   
-
-
 if __name__ == '__main__':
     main()
 

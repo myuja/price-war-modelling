@@ -1,1 +1,4 @@
-# price-war-modelling
+# Modelling a Price War
+
+##
+#Initial probability for strategies is random
