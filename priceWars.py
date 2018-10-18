@@ -22,16 +22,21 @@ from random import random
 class Enterprise:
     starting_Capital = 100
     market_Share = 50
-    operating_Profit = []
     operating_Expenses = 10
+    strategies = []
+    choices = []
     bankrupt = False
 
 def main():
     #Initialize enterprises with desired parameters
+    rounds = 12
     enterpriseA = Enterprise()
     enterpriseB = Enterprise()
+    enterpriseA.choices = ["None"]
+    enterpriseB.choices = ["None"]
 
-    rounds = 12
+    #Seed for the pseudo-random generator to be used in initializing the strategy
+    seed(100)
 
     #Initialize variables for looping and storing data
     current_Round = 0
@@ -42,6 +47,7 @@ def main():
     while current_Round < rounds:
 
         #Initialize the payoff matrix
+        #The payoff matrix changes if there has been a change in market share
         #The values are multiplied by the market share 
         bothHighPrices = [10 * enterpriseA.market_Share/100, 10 * enterpriseB.market_Share/100]
         enterpriseALowPrice = [20 * enterpriseA.market_Share/100, 0 * enterpriseB.market_Share/100]
@@ -76,23 +82,22 @@ def main():
         highPricePayOffA = bothHighPrices[0] + enterpriseBLowPrice[0]
         highPricePayOffB = bothHighPrices[1] + enterpriseALowPrice[1]
 
-        if lowPricePayOffA > highPricePayOffA:
-            choiceA = "lowPrice"
+        if lowPricePayOffA > highPricePayOffA and current_Round > 0:
+            enterpriseA.choices += ["lowPrice"]
         else:
-            choiceA = "highPrice"
-
-        if lowPricePayOffB > highPricePayOffB:
-            choiceB = "lowPrice"
+            enterpriseA.choices += ["highPrice"]
+        if lowPricePayOffB > highPricePayOffB and current_Round > 0:
+            enterpriseB.choices += ["lowPrice"]
         else:
-            choiceB = "highPrice"
+            enterpriseB.choices += ["highPrice"]
 
         #For the starting round, we assume that neither company knows the true market price
         #They are given equal probabilities to choose a low price or a high price
         if current_Round == 0:
-            seed(10)
             rand = [random(), random()]
-            choiceA = "lowPrice" if rand[0] < 0.50 else "highPrice"
-            choiceB = "lowPrice" if rand[1] < 0.50 else "highPrice"
+            print(rand)
+            enterpriseA.choices[0] = "lowPrice" if rand[0] < 0.50 else "highPrice"
+            enterpriseB.choices[0] = "lowPrice" if rand[1] < 0.50 else "highPrice"
 
         print("Round: " + str(current_Round))
         print("Firm A starts with " + str(enterpriseA.starting_Capital) + ' in capital')
@@ -104,16 +109,17 @@ def main():
         print("Firm A spends " + str(enterpriseA.operating_Expenses) + ' in operating expenses.')
         print("Firm B spends " + str(enterpriseB.operating_Expenses) + ' in operating expenses.')
 
-        print("Firm A chose to set a " + choiceA)
-        print("Firm B chose to set a " + choiceB)
+        print("Firm A chose to set a " + enterpriseA.choices[current_Round])
+        print("Firm B chose to set a " + enterpriseB.choices[current_Round])
 
 
         #Evaluate all the cases based on firm choices
         #Reward or punish the choice in market share if opposite choices are made
-        if choiceA == "lowPrice" and choiceB == "lowPrice":
+        #Equal choices = market share stays the same
+        if enterpriseA.choices[current_Round] == "lowPrice" and enterpriseB.choices[current_Round] == "lowPrice":
             enterpriseA.starting_Capital += bothLowPrice[0]
             enterpriseB.starting_Capital += bothLowPrice[1]
-        if choiceA == "lowPrice" and choiceB == "highPrice":
+        if enterpriseA.choices[current_Round] == "lowPrice" and enterpriseB.choices[current_Round] == "highPrice":
             enterpriseA.starting_Capital += enterpriseALowPrice[0]
             enterpriseB.starting_Capital += enterpriseALowPrice[1]
 
@@ -122,7 +128,7 @@ def main():
 
             #Punish Firm B
             enterpriseB.market_Share -= 10
-        if choiceA == "highPrice" and choiceB == "lowPrice":
+        if enterpriseA.choices[current_Round] == "highPrice" and enterpriseB.choices[current_Round] == "lowPrice":
             enterpriseA.starting_Capital += enterpriseBLowPrice[0]
             enterpriseB.starting_Capital += enterpriseBLowPrice[1]
 
@@ -132,7 +138,7 @@ def main():
             #Reward Firm B
             enterpriseB.market_Share += 10
 
-        if choiceA == "highPrice" and choiceB == "highPrice":
+        if enterpriseA.choices[current_Round] == "highPrice" and enterpriseB.choices[current_Round] == "highPrice":
             enterpriseA.starting_Capital += bothHighPrices[0]
             enterpriseB.starting_Capital += bothHighPrices[1]
             
@@ -153,7 +159,7 @@ def main():
 
 
 def choose_Strategy():
-    
+    return None
     
 def plot(rounds, enterpriseACap, enterpriseBCap):
     # x axis values 
