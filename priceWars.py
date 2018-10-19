@@ -15,10 +15,6 @@ import matplotlib.pyplot as plt
 from random import seed
 from random import random
 
-#Initiliatize the variables
-
-#Assign a starting capital for each company
-
 class Enterprise:
     starting_Capital = 100
     market_Share = 50
@@ -108,50 +104,42 @@ def main():
         enterpriseB.starting_Capital -= enterpriseB.operating_Expenses
         print("Firm A spends " + str(enterpriseA.operating_Expenses) + ' in operating expenses.')
         print("Firm B spends " + str(enterpriseB.operating_Expenses) + ' in operating expenses.')
-
         print("Firm A chose to set a " + enterpriseA.choices[current_Round])
         print("Firm B chose to set a " + enterpriseB.choices[current_Round])
-
 
         #Evaluate all the cases based on firm choices
         #Reward or punish the choice in market share if opposite choices are made
         #Equal choices = market share stays the same
-        if enterpriseA.choices[current_Round] == "lowPrice" and enterpriseB.choices[current_Round] == "lowPrice":
+        if enterpriseA.choices[current_Round] == "lowPrice" \
+        and enterpriseB.choices[current_Round] == "lowPrice":
             enterpriseA.starting_Capital += bothLowPrice[0]
             enterpriseB.starting_Capital += bothLowPrice[1]
-        if enterpriseA.choices[current_Round] == "lowPrice" and enterpriseB.choices[current_Round] == "highPrice":
+        if enterpriseA.choices[current_Round] == "lowPrice" \
+        and enterpriseB.choices[current_Round] == "highPrice":
             enterpriseA.starting_Capital += enterpriseALowPrice[0]
             enterpriseB.starting_Capital += enterpriseALowPrice[1]
-
             #Reward Firm A
             enterpriseA.market_Share += 10
-
             #Punish Firm B
             enterpriseB.market_Share -= 10
-        if enterpriseA.choices[current_Round] == "highPrice" and enterpriseB.choices[current_Round] == "lowPrice":
+        if enterpriseA.choices[current_Round] == "highPrice" \
+        and enterpriseB.choices[current_Round] == "lowPrice":
             enterpriseA.starting_Capital += enterpriseBLowPrice[0]
             enterpriseB.starting_Capital += enterpriseBLowPrice[1]
-
             #Punish Firm A
             enterpriseA.market_Share -= 10
-            
             #Reward Firm B
             enterpriseB.market_Share += 10
-
-        if enterpriseA.choices[current_Round] == "highPrice" and enterpriseB.choices[current_Round] == "highPrice":
+        if enterpriseA.choices[current_Round] == "highPrice" \
+        and enterpriseB.choices[current_Round] == "highPrice":
             enterpriseA.starting_Capital += bothHighPrices[0]
             enterpriseB.starting_Capital += bothHighPrices[1]
             
-
         print("Firm A now has " + str(enterpriseA.starting_Capital) + " in capital")
         print("Firm B now has " + str(enterpriseB.starting_Capital) + " in capital")
-
-        
-
         print("Firm A now has " + str(enterpriseA.market_Share) + "% in market share")
         print("Firm B now has " + str(enterpriseB.market_Share) + "% in market share")
         print("-------------------------\n")
-
 
         current_Round += 1
     
