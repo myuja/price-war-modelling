@@ -148,12 +148,12 @@ def main():
         print([x for x in enterpriseA.choices])
         current_Round += 1
     
-    plot(rounds, enterpriseACap, enterpriseBCap)
+    plot(rounds, enterpriseACap, enterpriseBCap, enterpriseA.operating_Expenses, seed)
 
 def choose_Strategy():
     return None
     
-def plot(rounds, enterpriseACap, enterpriseBCap):
+def plot(rounds, enterpriseACap, enterpriseBCap, opEx, seed):
     # x axis values 
     x = [x for x in range(1, rounds + 1)]
     # corresponding y axis values 
@@ -172,7 +172,7 @@ def plot(rounds, enterpriseACap, enterpriseBCap):
     plt.ylabel('Capital') 
     
     # giving a title to my graph 
-    plt.title('Operating Expenses = 2.5, Seed = 100') 
+    plt.title('Operating Expenses = ' + str(opEx) + ', Seed = ' + str(seed)) 
     
     # show a legend on the plot 
     plt.legend() 
