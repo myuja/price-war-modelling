@@ -18,7 +18,7 @@ from random import random
 class Enterprise:
     starting_Capital = 100
     market_Share = 50
-    operating_Expenses = 10
+    operating_Expenses = 2.5
     strategies = []
     choices = []
     bankrupt = False
@@ -57,7 +57,7 @@ def main():
             print("Firm A can't cover its operating expenses for the next round. Firm B wins.\n")
             break
 
-        if enterpriseB.starting_Capital <= enterpriseA.operating_Expenses and enterpriseB.bankrupt == False:
+        if enterpriseB.starting_Capital <= enterpriseB.operating_Expenses and enterpriseB.bankrupt == False:
             enterpriseB.bankrupt = True
             rounds = current_Round
             print("Firm B can't cover its operating expenses for the next round. Firm A wins.\n")
@@ -78,13 +78,17 @@ def main():
         highPricePayOffA = bothHighPrices[0] + enterpriseBLowPrice[0]
         highPricePayOffB = bothHighPrices[1] + enterpriseALowPrice[1]
 
+        print("Low price Payoffs: A = " + str(lowPricePayOffA) + " B = " + str(lowPricePayOffB))
+        print("High price Payoffs: A = " + str(highPricePayOffA) + " B = " + str(highPricePayOffB))
+
+
         if lowPricePayOffA > highPricePayOffA and current_Round > 0:
             enterpriseA.choices += ["lowPrice"]
-        else:
+        elif lowPricePayOffA < highPricePayOffA and current_Round > 0:
             enterpriseA.choices += ["highPrice"]
         if lowPricePayOffB > highPricePayOffB and current_Round > 0:
             enterpriseB.choices += ["lowPrice"]
-        else:
+        elif lowPricePayOffB < highPricePayOffB and current_Round > 0:
             enterpriseB.choices += ["highPrice"]
 
         #For the starting round, we assume that neither company knows the true market price
@@ -94,6 +98,7 @@ def main():
             print(rand)
             enterpriseA.choices[0] = "lowPrice" if rand[0] < 0.50 else "highPrice"
             enterpriseB.choices[0] = "lowPrice" if rand[1] < 0.50 else "highPrice"
+            print(enterpriseA.choices)
 
         print("Round: " + str(current_Round))
         print("Firm A starts with " + str(enterpriseA.starting_Capital) + ' in capital')
@@ -140,11 +145,10 @@ def main():
         print("Firm A now has " + str(enterpriseA.market_Share) + "% in market share")
         print("Firm B now has " + str(enterpriseB.market_Share) + "% in market share")
         print("-------------------------\n")
-
+        print([x for x in enterpriseA.choices])
         current_Round += 1
     
     plot(rounds, enterpriseACap, enterpriseBCap)
-
 
 def choose_Strategy():
     return None
@@ -168,7 +172,7 @@ def plot(rounds, enterpriseACap, enterpriseBCap):
     plt.ylabel('Capital') 
     
     # giving a title to my graph 
-    plt.title('Capital of Two Firms in a Price War') 
+    plt.title('Operating Expenses = 2.5, Seed = 100') 
     
     # show a legend on the plot 
     plt.legend() 
